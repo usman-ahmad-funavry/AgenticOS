@@ -1,0 +1,34 @@
+#node_modules
+node_modules/
+#env
+.env
+
+# Bun files
+node_modules/
+.env
+bun.lockb
+
+# Build output
+dist/
+
+# Data files with sensitive information
+data/tokens.json
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS files
+.DS_Store
+Thumbs.db

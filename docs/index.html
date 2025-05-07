@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AgenticOS Key Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { 
+            max-width: 600px; 
+            margin: 20px auto; 
+            padding: 20px; 
+            font-family: system-ui;
+            background: #f8f9fa;
+        }
+        .keys { 
+            background: white; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .copy-btn {
+            background: #1DA1F2;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        pre {
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .key-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .copy-btn {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .generate-btn {
+            padding: 10px 20px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+        .copy-btn:hover, .generate-btn:hover {
+            opacity: 0.9;
+        }
+        .key-container {
+            max-width: 800px;
+            width: 90%;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .key-group {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+        .key-label {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .key-content {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .key-value {
+            font-family: monospace;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            flex: 1;
+            min-width: 200px;
+            word-break: break-all;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .copy-btn {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+            min-width: 70px;
+        }
+        .btn-text {
+            display: inline-block;
+            min-width: 45px;
+            text-align: center;
+        }
+        .copy-btn:hover {
+            background-color: #45a049;
+            transform: translateY(-1px);
+        }
+        .copy-btn:active {
+            transform: translateY(0);
+        }
+        .generate-btn {
+            padding: 12px 20px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        .generate-btn:hover {
+            background-color: #1976D2;
+        }
+        .toast {
+            visibility: hidden;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            text-align: center;
+            max-width: 90%;
+        }
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(-50%) translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+        .toast.success {
+            background-color: #4CAF50;
+        }
+        .info-text {
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+        }
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .key-container {
+                width: 95%;
+                padding: 15px;
+            }
+            .key-group {
+                padding: 12px;
+            }
+            .key-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .copy-btn {
+                width: 100%;
+                padding: 10px;
+            }
+            .key-value {
+                padding: 8px;
+                font-size: 13px;
+            }
+            .toast {
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>🔐 AgenticOS Key Generator</h1>
+    <div id="keys" class="keys">
+        <div class="key-container">
+            <div id="toast" class="toast"></div>
+            <div class="key-group">
+                <div class="key-label">ENCRYPTION_KEY:</div>
+                <div class="key-content">
+                    <div class="key-value" id="encryptionKey"></div>
+                    <button onclick="copyKey(event, 'encryptionKey', 'Encryption Key')" class="copy-btn">
+                        <span class="btn-text">Copy</span>
+                    </button>
+                </div>
+            </div>
+            <div class="key-group">
+                <div class="key-label">ENCRYPTION_SALT:</div>
+                <div class="key-content">
+                    <div class="key-value" id="salt"></div>
+                    <button onclick="copyKey(event, 'salt', 'Encryption Salt')" class="copy-btn">
+                        <span class="btn-text">Copy</span>
+                    </button>
+                </div>
+            </div>
+            <div class="key-group">
+                <div class="key-label">ENCRYPTION_IV:</div>
+                <div class="key-content">
+                    <div class="key-value" id="iv"></div>
+                    <button onclick="copyKey(event, 'iv', 'Encryption IV')" class="copy-btn">
+                        <span class="btn-text">Copy</span>
+                    </button>
+                </div>
+            </div>
+            <button onclick="generateKeys()" class="generate-btn">Regenerate Secrets</button>
+        </div>
+    </div>
+    <div class="info-box">
+        <p>🛡️ <strong>Security Note:</strong> Keys are generated using secure cryptography, never stored, and unique for each generation. Click 'Generate New Keys' or refresh page for new keys. Safe to use in your .env file.</p>
+        <p>💡 <strong>Tip:</strong> You can also generate your own keys and use them in your .env file.</p>
+    </div>
+    <script>
+    async function generateKeys() {
+        // Generate random values using Web Crypto API
+        const encryptionKey = await generateRandomHex(32);
+        const salt = await generateRandomHex(16);
+        const iv = await generateRandomHex(16);
+        
+        // Display the values
+        document.getElementById('encryptionKey').textContent = encryptionKey;
+        document.getElementById('salt').textContent = salt;
+        document.getElementById('iv').textContent = iv;
+    }
+
+    async function generateRandomHex(bytes) {
+        const buffer = new Uint8Array(bytes);
+        crypto.getRandomValues(buffer);
+        return Array.from(buffer)
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('');
+    }
+
+    function copyKey(event, elementId, label) {
+        const text = document.getElementById(elementId).textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            // Show feedback on the specific copy button
+            const button = event.target.closest('.copy-btn');
+            const btnText = button.querySelector('.btn-text');
+            const originalText = btnText.textContent;
+            
+            // Change only the button text
+            btnText.textContent = 'Copied!';
+            
+            // Reset button text after 1 second
+            setTimeout(() => {
+                btnText.textContent = originalText;
+            }, 1000);
+            
+            // Show toast notification
+            showToast(`✓ ${label} copied to clipboard`);
+        });
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        
+        // Remove the toast after 3 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+
+    // Generate keys when page loads
+    window.onload = generateKeys;
+    </script>
+</body>
+</html>
